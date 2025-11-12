@@ -1,0 +1,33 @@
+# -----------------------
+# Node.js / Express
+# -----------------------
+node_server/node_modules/
+node_server/.env
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Ignore logs
+*.log
+logs/
+debug.log
+
+# Build artifacts
+backend_cpp/build/
+*.exe
+*.out
+*.o
+
+# Mac / Windows specific
+.DS_Store
+Thumbs.db
+
+# IDE / Editor folders
+.vscode/
+.idea/
+*.code-workspace
+
+# Backup / temp files
+*.bak
+*.tmp
+*.swp
