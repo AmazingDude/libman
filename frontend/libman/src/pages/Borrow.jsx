@@ -33,11 +33,11 @@ function Borrow() {
 
   return (
     <div className="max-w-lg mx-auto">
-      <div className="bg-neutral-900/50 rounded-xl border border-neutral-800 p-8">
-        <h2 className="text-2xl font-semibold mb-2 text-neutral-100">
+      <div className="bg-neutral-900/50 rounded-xl border border-neutral-800 p-4 sm:p-8">
+        <h2 className="text-xl sm:text-2xl font-semibold mb-2 text-neutral-100">
           borrow book
         </h2>
-        <p className="text-neutral-600 text-sm mb-8">
+        <p className="text-neutral-600 text-xs sm:text-sm mb-6 sm:mb-8">
           enter user id and book id to borrow
         </p>
 
@@ -75,7 +75,7 @@ function Borrow() {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full px-4 py-3 rounded-lg text-sm font-medium transition-all ${
+            className={`w-full px-4 py-3 rounded-lg text-sm font-medium cursor-pointer transition-all ${
               loading
                 ? "bg-neutral-800/50 text-neutral-600 cursor-not-allowed"
                 : "bg-green-950/30 text-green-400 border border-green-900/50 hover:bg-green-950/50"

@@ -43,13 +43,13 @@ function Users() {
   return (
     <div>
       {/* Add User Button */}
-      <div className="mb-6 flex justify-between items-center">
-        <h2 className="text-xl font-semibold text-neutral-100">
+      <div className="mb-6 flex justify-between items-center gap-4">
+        <h2 className="text-lg sm:text-xl font-semibold text-neutral-100">
           {users.length} users
         </h2>
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className={`px-6 py-3 rounded-lg text-sm font-medium transition-all ${
+          className={`px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
             showAddForm
               ? "bg-red-950/30 text-red-400 border border-red-900/50"
               : "bg-green-950/30 text-green-400 border border-green-900/50 hover:bg-green-950/50"
@@ -98,45 +98,74 @@ function Users() {
             no users found
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-neutral-800">
-                  <th className="px-4 py-4 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider">
-                    ID
-                  </th>
-                  <th className="px-4 py-4 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th className="px-4 py-4 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider">
-                    Contact
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((user, idx) => (
-                  <tr
-                    key={user.id || idx}
-                    className={
-                      idx < users.length - 1
-                        ? "border-b border-neutral-800/50"
-                        : ""
-                    }
-                  >
-                    <td className="px-4 py-4 text-sm text-neutral-400">
-                      {user.id}
-                    </td>
-                    <td className="px-4 py-4 text-sm font-medium text-neutral-100">
-                      {user.name}
-                    </td>
-                    <td className="px-4 py-4 text-sm font-mono text-neutral-400">
-                      {user.phone || user.contact}
-                    </td>
+          <>
+            {/* Desktop Table */}
+            <div className="hidden sm:block overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-neutral-800">
+                    <th className="px-4 py-4 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider">
+                      ID
+                    </th>
+                    <th className="px-4 py-4 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider">
+                      Name
+                    </th>
+                    <th className="px-4 py-4 text-left text-xs font-semibold text-neutral-500 uppercase tracking-wider">
+                      Contact
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {users.map((user, idx) => (
+                    <tr
+                      key={user.id || idx}
+                      className={
+                        idx < users.length - 1
+                          ? "border-b border-neutral-800/50"
+                          : ""
+                      }
+                    >
+                      <td className="px-4 py-4 text-sm text-neutral-400">
+                        {user.id}
+                      </td>
+                      <td className="px-4 py-4 text-sm font-medium text-neutral-100">
+                        {user.name}
+                      </td>
+                      <td className="px-4 py-4 text-sm font-mono text-neutral-400">
+                        {user.phone || user.contact}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Cards */}
+            <div className="sm:hidden">
+              {users.map((user, idx) => (
+                <div
+                  key={user.id || idx}
+                  className={`p-4 ${
+                    idx < users.length - 1
+                      ? "border-b border-neutral-800/50"
+                      : ""
+                  }`}
+                >
+                  <div className="flex justify-between items-start mb-1">
+                    <h3 className="text-sm font-medium text-neutral-100">
+                      {user.name}
+                    </h3>
+                    <span className="text-xs text-neutral-500">
+                      ID: {user.id}
+                    </span>
+                  </div>
+                  <p className="text-xs font-mono text-neutral-400">
+                    {user.phone || user.contact}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
     </div>

@@ -33,11 +33,11 @@ function Return() {
 
   return (
     <div className="max-w-lg mx-auto">
-      <div className="bg-neutral-900/50 rounded-xl border border-neutral-800 p-8">
-        <h2 className="text-2xl font-semibold mb-2 text-neutral-100">
+      <div className="bg-neutral-900/50 rounded-xl border border-neutral-800 p-4 sm:p-8">
+        <h2 className="text-xl sm:text-2xl font-semibold mb-2 text-neutral-100">
           return book
         </h2>
-        <p className="text-neutral-600 text-sm mb-8">
+        <p className="text-neutral-600 text-xs sm:text-sm mb-6 sm:mb-8">
           enter user id and book id to return
         </p>
 
@@ -75,7 +75,7 @@ function Return() {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full px-4 py-3 rounded-lg text-sm font-medium transition-all ${
+            className={`w-full px-4 py-3 rounded-lg text-sm font-medium cursor-pointer transition-all ${
               loading
                 ? "bg-neutral-800/50 text-neutral-600 cursor-not-allowed"
                 : "bg-blue-950/30 text-blue-400 border border-blue-900/50 hover:bg-blue-950/50"
