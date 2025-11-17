@@ -24,7 +24,7 @@ Users::~Users()
 
 void Users::addUser(int id, const string &name, const string &phone)
 {
-    // Check for duplicates
+    // Checking the cin for duplicates
     if (findById(id))
         return;
 
@@ -47,7 +47,7 @@ bool Users::loadFromCSV(const string &filename)
         return false;
 
     string line;
-    getline(file, line); // skip header
+    getline(file, line);
 
     while (getline(file, line))
     {
@@ -70,6 +70,28 @@ bool Users::loadFromCSV(const string &filename)
     file.close();
     return true;
 }
+
+bool Users::saveToCSV(const string &filename)
+{
+    std::ofstream file(filename);
+    if (!file.is_open())
+        return false;
+
+    file << "id,name,phone\n";
+
+    User *temp = head;
+    while (temp)
+    {
+        file << temp->id << ","
+             << temp->name << ","
+             << temp->phone << "\n";
+        temp = temp->next;
+    }
+
+    file.close();
+    return true;
+}
+
 
 string Users::displayUsers() const
 {

@@ -27,8 +27,15 @@ public:
     Transactions();
     ~Transactions(); // destructor
 
-    void addTransaction(int userId, int bookId, bool returned);
+    bool loadFromCSV(const string &filename);
+    bool saveToCSV(const string &filename);
+
+    void borrowbook(int userId, int bookId);
+    void returnbook(int userId, int bookId);
+
     string displayTransactions() const;
+
+    string getTodayDate() const;
 };
 
 #endif
