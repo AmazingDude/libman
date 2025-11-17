@@ -1,14 +1,18 @@
 #include <iostream>
 #include "Book.h"
 #include "User.h"
-// #include "Transaction.h"
+#include "Transaction.h"
 
 using namespace std;
+
+// single global instances (definition)
+Books books;
+Users users;
+Transactions transactions;
 
 int main()
 {
     // ----------------- Load Users -----------------
-    Users users;
     if (!users.loadFromCSV("users.csv"))
     {
         cout << "Failed to load users.csv\n";
@@ -20,7 +24,6 @@ int main()
     }
 
     // ----------------- Load Books -----------------
-    Books books;
     if (!books.loadFromCSV("books.csv"))
     {
         cout << "Failed to load books.csv\n";
@@ -29,6 +32,17 @@ int main()
     {
         cout << "Books loaded successfully:\n";
         cout << books.displayBooks() << endl;
+    }
+
+    // ----------------- Load Transactions -----------------
+    if (!transactions.loadFromCSV("transactions.csv"))
+    {
+        cout << "No transactions loaded (file missing or empty).\n";
+    }
+    else
+    {
+        cout << "Transactions loaded successfully:\n";
+        cout << transactions.displayTransactions() << endl;
     }
 
     // ----------------- Example Operations -----------------
@@ -47,9 +61,9 @@ int main()
         cout << "Book with ID " << searchId << " not found.\n";
     }
 
-    string searchName = "Trip";
-    b = nullptr;
-    b = books.findByIsbn(searchName);
+    string searchIsbn = "Trip";
+    b = books.findByIsbn(searchIsbn);
+    if (b) cout << "Found by ISBN: " << b->title << endl;
 
     return 0;
 }
