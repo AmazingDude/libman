@@ -33,6 +33,12 @@ public:
     void sortByTitle(bool ascending = true);
     Book *findById(int id);
     Book *findByIsbn(const string &isbn);
+    Book* mergeSort(Book* head, bool ascending);
+    Book* mergeLists(Book* first, Book* second, bool ascending);
+    Book* split(Book* head);
+    bool saveToCSV(const string &filename) const;
+    
+
 };
 
 #endif

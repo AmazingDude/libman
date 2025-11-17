@@ -1,9 +1,10 @@
 #include "Transaction.h"
+#include "Book.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <ctime>
-
+extern Books books;
 string Transactions::getTodayDate() const
 {
     time_t now = time(nullptr);
@@ -103,12 +104,11 @@ bool Transactions::saveToCSV(const string &filename)
     file.close();
     return true;
 }
-
-
-// borrowing book
 void Transactions::borrowTransaction(int userId, int bookId)
 {
-        Book *book = books.findById(bookId);
+    extern Books books;
+
+    Book *book = books.findById(bookId);
     if (!book)
     {
         cout << "Book not found!\n";
@@ -121,52 +121,61 @@ void Transactions::borrowTransaction(int userId, int bookId)
         return;
     }
 
+    // Mark it unavailable
+    book->available = false;
+
+    // Save book.csv
+    books.saveToCSV("books.csv");
+
     string today = getTodayDate();
 
     Transaction *t = new Transaction(
         nextTransactionId++,
         userId,
         bookId,
-        today,    // borrowDate
-        ""        // returnDate is currently empty
+        today,
+        ""
     );
 
     if (!head)
         head = tail = t;
-    else
-    {
+    else {
         tail->next = t;
         tail = t;
     }
-}
 
+    saveToCSV("transactions.csv");
+}
 //return transaction
 void Transactions::returnbook(int userId, int bookId)
 {
+    extern Books books;
+
     Transaction *temp = head;
 
-    // Find unfinished borrow of this book
     while (temp)
     {
         if (temp->userId == userId &&
             temp->bookId == bookId &&
-            temp->returnDate.empty()) // not returned yet
+            temp->returnDate.empty())
         {
             temp->returnDate = getTodayDate();
 
-            Book *book = books.findById(bookId);//this will now look up the book
-            if (book)//then it will set it to available again
+            // Mark book as available
+            Book *book = books.findById(bookId);
+            if (book)
                 book->available = true;
+
+            // Save both CSV files
+            books.saveToCSV("books.csv");
+            saveToCSV("transactions.csv");
 
             cout << "Book returned successfully!\n";
             return;
-            
         }
         temp = temp->next;
     }
 }
-
-
 //display function
 string Transactions::displayTransactions() const
 {

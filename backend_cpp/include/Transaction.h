@@ -2,19 +2,20 @@
 #define TRANSACTION_H
 
 #include <string>
-#include <ctime>
 using namespace std;
 
 class Transaction
 {
 public:
+    int transactionId;
     int userId;
     int bookId;
-    time_t timestamp;
-    bool returned;
+    string borrowDate;
+    string returnDate;
     Transaction *next;
 
-    Transaction(int userId, int bookId, bool returned);
+    // Match the constructor used in Transaction.cpp
+    Transaction(int tID, int userId, int bookId, const string &bDate, const string &rDate);
 };
 
 class Transactions
@@ -22,6 +23,7 @@ class Transactions
 private:
     Transaction *head;
     Transaction *tail;
+    int nextTransactionId; // used in Transaction.cpp
 
 public:
     Transactions();
@@ -30,7 +32,8 @@ public:
     bool loadFromCSV(const string &filename);
     bool saveToCSV(const string &filename);
 
-    void borrowbook(int userId, int bookId);
+    // Name must match implementation
+    void borrowTransaction(int userId, int bookId);
     void returnbook(int userId, int bookId);
 
     string displayTransactions() const;

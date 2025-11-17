@@ -7,13 +7,11 @@
 Book::Book(int id, const string &title, const string &author, const string &isbn, bool available)
     : id(id), title(title), author(author), isbn(isbn), available(available), next(nullptr) {}
 
-// ------------------- Books class -------------------
 
 Books::Books() : head(nullptr), tail(nullptr) {}
 
 Books::~Books()
 {
-    // Destructor
     Book *temp = head;
     while (temp)
     {
@@ -22,25 +20,22 @@ Books::~Books()
         temp = nextBook;
     }
 }
-
 bool Books::addBook(int id, const string &title, const string &author, const string &isbn, bool available)
 {
     if (findById(id) || findByIsbn(isbn))
-        return false; // already exists
+        return false;
 
     Book *newBook = new Book(id, title, author, isbn, available);
+
     if (!head)
-    {
         head = tail = newBook;
-    }
-    else
-    {
+    else {
         tail->next = newBook;
         tail = newBook;
     }
+    saveToCSV("books.csv");
     return true;
 }
-
 bool Books::loadFromCSV(const string &filename)
 {
     ifstream file(filename);
@@ -48,10 +43,9 @@ bool Books::loadFromCSV(const string &filename)
         return false;
 
     string line;
-    getline(file, line); // skip header
+    getline(file, line); 
 
-    while (getline(file, line))
-    {
+    while (getline(file, line)) {
         if (line.empty())
             continue;
 
@@ -69,10 +63,14 @@ bool Books::loadFromCSV(const string &filename)
 
         int id = stoi(idStr);
         bool available = (availabilityStr == "Available" || availabilityStr == "available" || availabilityStr == "1");
-
-        addBook(id, title, author, isbn, available);
+    Book *newBook = new Book(id, title, author, isbn, available);
+    if (!head)
+        head = tail = newBook;
+    else {
+    tail->next = newBook;
+    tail = newBook;
     }
-
+}
     file.close();
     return true;
 }
@@ -119,26 +117,74 @@ Book *Books::findByIsbn(const string &isbn)
     }
     return nullptr;
 }
+Book* Books::split(Book* head) {
+    Book* fast = head;
+    Book* slow = head;
 
-// Sort books by title (simple bubble sort)
+    while (fast->next && fast->next->next) {
+        fast = fast->next->next;
+        slow = slow->next;
+    }
+
+    Book* second = slow->next;
+    slow->next = nullptr;
+    return second;
+}
+Book* Books::mergeLists(Book* first, Book* second, bool ascending) {
+    if (!first) return second;
+    if (!second) return first;
+
+    bool condition = ascending ? (first->title < second->title)
+                               : (first->title > second->title);
+
+    if (condition) {
+        first->next = mergeLists(first->next, second, ascending);
+        return first;
+    } else {
+        second->next = mergeLists(first, second->next, ascending);
+        return second;
+    }
+}
+Book* Books::mergeSort(Book* head, bool ascending) {
+    if (!head || !head->next)
+        return head;
+
+    Book* second = split(head);
+
+    head = mergeSort(head, ascending);
+    second = mergeSort(second, ascending);
+
+    return mergeLists(head, second, ascending);
+}
 void Books::sortByTitle(bool ascending)
 {
-    if (!head || !head->next)
-        return;
-
-    for (Book *i = head; i != nullptr; i = i->next)
-    {
-        for (Book *j = i->next; j != nullptr; j = j->next)
-        {
-            if ((ascending && i->title > j->title) || (!ascending && i->title < j->title))
-            {
-                // swap data, not nodes
-                swap(i->id, j->id);
-                swap(i->title, j->title);
-                swap(i->author, j->author);
-                swap(i->isbn, j->isbn);
-                swap(i->available, j->available);
-            }
-        }
+    head = mergeSort(head, ascending);
+    tail = head;
+    if (tail) {
+        while (tail->next)
+            tail = tail->next;
     }
+}
+bool Books::saveToCSV(const string &filename) const
+{
+    ofstream file(filename);
+    if (!file.is_open())
+        return false;
+
+    file << "ID,Title,Author,ISBN,Availability\n";
+
+    Book *temp = head;
+    while (temp)
+    {
+        file << temp->id << ","
+             << temp->title << ","
+             << temp->author << ","
+             << temp->isbn << ","
+             << (temp->available ? "Available" : "Borrowed") << "\n";
+
+        temp = temp->next;
+    }
+
+    file.close();
+    return true;
 }
