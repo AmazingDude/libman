@@ -108,6 +108,19 @@ bool Transactions::saveToCSV(const string &filename)
 // borrowing book
 void Transactions::borrowTransaction(int userId, int bookId)
 {
+        Book *book = books.findById(bookId);
+    if (!book)
+    {
+        cout << "Book not found!\n";
+        return;
+    }
+
+    if (!book->available)
+    {
+        cout << "Book is already borrowed!\n";
+        return;
+    }
+
     string today = getTodayDate();
 
     Transaction *t = new Transaction(
@@ -140,7 +153,14 @@ void Transactions::returnbook(int userId, int bookId)
             temp->returnDate.empty()) // not returned yet
         {
             temp->returnDate = getTodayDate();
+
+            Book *book = books.findById(bookId);//this will now look up the book
+            if (book)//then it will set it to available again
+                book->available = true;
+
+            cout << "Book returned successfully!\n";
             return;
+            
         }
         temp = temp->next;
     }
