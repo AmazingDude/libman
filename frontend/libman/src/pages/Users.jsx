@@ -62,7 +62,7 @@ function Users() {
         </h2>
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className={`px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
+          className={`px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap cursor-pointer ${
             showAddForm
               ? "bg-red-950/30 text-red-400 border border-red-900/50"
               : "bg-green-950/30 text-green-400 border border-green-900/50 hover:bg-green-950/50"

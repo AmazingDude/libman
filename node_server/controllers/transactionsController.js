@@ -132,12 +132,16 @@ export const getAllTransactions = (req, res) => {
         const borrowDateMatch = line.match(/BorrowDate:\s*([^|]+)/);
         const returnDateMatch = line.match(/ReturnDate:\s*(.+)/);
 
+        const returnDate = returnDateMatch ? returnDateMatch[1].trim() : "";
+        const returned = returnDate !== "" && returnDate !== "Not Returned";
+
         return {
           id: idMatch ? parseInt(idMatch[1]) : null,
           userId: userIdMatch ? parseInt(userIdMatch[1]) : null,
           bookId: bookIdMatch ? parseInt(bookIdMatch[1]) : null,
           borrowDate: borrowDateMatch ? borrowDateMatch[1].trim() : "",
-          returnDate: returnDateMatch ? returnDateMatch[1].trim() : ""
+          returnDate: returned ? returnDate : "",
+          returned: returned
         };
       });
 
