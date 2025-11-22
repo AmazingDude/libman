@@ -33,8 +33,8 @@ public:
     bool saveToCSV(const string &filename);
 
     // Name must match implementation
-    void borrowTransaction(int userId, int bookId);
-    void returnbook(int userId, int bookId);
+    bool borrowTransaction(int userId, int bookId);
+    bool returnbook(int userId, int bookId);
 
     string displayTransactions() const;
 

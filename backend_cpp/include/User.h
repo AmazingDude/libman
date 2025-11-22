@@ -25,9 +25,9 @@ public:
     Users();
     ~Users(); // destructor
 
-    void addUser(int id, const string &name, const string &phone);
+    bool addUser(int id, const string &name, const string &phone);
     bool loadFromCSV(const string &filename);
-    bool saveToCSV(const string &filename);  // <-- ADD THIS
+    bool saveToCSV(const string &filename); // <-- ADD THIS
     string displayUsers() const;
     User *findById(int id);
     User *findByName(const string &name);

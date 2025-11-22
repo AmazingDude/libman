@@ -22,7 +22,6 @@ Transaction::Transaction(int tID, int userId, int bookId,
     : transactionId(tID), userId(userId), bookId(bookId),
       borrowDate(bDate), returnDate(rDate), next(nullptr) {}
 
-
 // ------------------- Linked List Class -------------------
 
 Transactions::Transactions() : head(nullptr), tail(nullptr), nextTransactionId(1) {}
@@ -49,7 +48,8 @@ bool Transactions::loadFromCSV(const string &filename)
 
     while (getline(file, line))
     {
-        if (line.empty()) continue;
+        if (line.empty())
+            continue;
 
         stringstream ss(line);
         string tID, bID, uID, bDate, rDate;
@@ -104,50 +104,29 @@ bool Transactions::saveToCSV(const string &filename)
     file.close();
     return true;
 }
-void Transactions::borrowTransaction(int userId, int bookId)
+
+bool Transactions::borrowTransaction(int userId, int bookId)
 {
-    extern Books books;
-
     Book *book = books.findById(bookId);
-    if (!book)
-    {
-        cout << "Book not found!\n";
-        return;
-    }
+    if (!book || !book->available)
+        return false;
 
-    if (!book->available)
-    {
-        cout << "Book is already borrowed!\n";
-        return;
-    }
-
-    // Mark it unavailable
     book->available = false;
-
-    // Save book.csv
     books.saveToCSV("books.csv");
 
-    string today = getTodayDate();
-
-    Transaction *t = new Transaction(
-        nextTransactionId++,
-        userId,
-        bookId,
-        today,
-        ""
-    );
-
+    Transaction *t = new Transaction(nextTransactionId++, userId, bookId, getTodayDate(), "");
     if (!head)
         head = tail = t;
-    else {
+    else
         tail->next = t;
-        tail = t;
-    }
+    tail = t;
 
     saveToCSV("transactions.csv");
+    return true;
 }
-//return transaction
-void Transactions::returnbook(int userId, int bookId)
+
+// return transaction
+bool Transactions::returnbook(int userId, int bookId)
 {
     extern Books books;
 
@@ -171,12 +150,17 @@ void Transactions::returnbook(int userId, int bookId)
             saveToCSV("transactions.csv");
 
             cout << "Book returned successfully!\n";
-            return;
+            return true; // indicate success
         }
         temp = temp->next;
     }
+
+    // If we reach here, no matching transaction was found
+    cout << "Return failed: no matching transaction found.\n";
+    return false; // indicate failure
 }
-//display function
+
+// display function
 string Transactions::displayTransactions() const
 {
     if (!head)

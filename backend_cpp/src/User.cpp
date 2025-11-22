@@ -22,22 +22,19 @@ Users::~Users()
     }
 }
 
-void Users::addUser(int id, const string &name, const string &phone)
+bool Users::addUser(int id, const string &name, const string &phone)
 {
-    // Checking the cin for duplicates
     if (findById(id))
-        return;
+        return false; // duplicate found
 
     User *u = new User(id, name, phone);
     if (!head)
-    {
         head = tail = u;
-    }
     else
-    {
         tail->next = u;
-        tail = u;
-    }
+    tail = u;
+
+    return true;
 }
 
 bool Users::loadFromCSV(const string &filename)
@@ -91,7 +88,6 @@ bool Users::saveToCSV(const string &filename)
     file.close();
     return true;
 }
-
 
 string Users::displayUsers() const
 {
