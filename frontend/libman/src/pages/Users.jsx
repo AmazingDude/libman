@@ -23,9 +23,22 @@ function Users() {
 
   const handleAddUser = (e) => {
     e.preventDefault();
-    console.log("Adding user:", newUser);
-    setShowAddForm(false);
-    setNewUser({ name: "", phone: "" });
+
+    axios
+      .post("http://localhost:5000/api/users", newUser)
+      .then((res) => {
+        // Refresh the users list
+        return axios.get("http://localhost:5000/api/users");
+      })
+      .then((res) => {
+        setUsers(res.data);
+        setShowAddForm(false);
+        setNewUser({ name: "", phone: "" });
+      })
+      .catch((err) => {
+        console.error("Failed to add user:", err);
+        alert("Failed to add user. Please try again.");
+      });
   };
 
   if (loading) {
@@ -160,6 +173,7 @@ function Users() {
                     </span>
                   </div>
                   <p className="text-xs font-mono text-neutral-400">
+                    <span className="text-neutral-500">Contact: </span>
                     {user.phone || user.contact}
                   </p>
                 </div>
