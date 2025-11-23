@@ -7,6 +7,7 @@ function Users() {
   const [error, setError] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newUser, setNewUser] = useState({ name: "", phone: "" });
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     axios
@@ -53,12 +54,30 @@ function Users() {
     );
   }
 
+  // Filter users by search query
+  const displayedUsers = users.filter(
+    (user) =>
+      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (user.phone && user.phone.includes(searchQuery))
+  );
+
   return (
     <div>
+      {/* Search Input */}
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Search by name or phone..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full px-4 py-3 bg-neutral-900/50 border border-neutral-800 rounded-lg text-neutral-100 text-sm placeholder:text-neutral-600 focus:outline-none focus:border-neutral-600"
+        />
+      </div>
+
       {/* Add User Button */}
       <div className="mb-6 flex justify-between items-center gap-4">
         <h2 className="text-lg sm:text-xl font-semibold text-neutral-100">
-          {users.length} users
+          {displayedUsers.length} users {searchQuery && `(of ${users.length})`}
         </h2>
         <button
           onClick={() => setShowAddForm(!showAddForm)}
@@ -106,9 +125,9 @@ function Users() {
 
       {/* Users List */}
       <div className="bg-neutral-900/50 rounded-xl border border-neutral-800 overflow-hidden">
-        {users.length === 0 ? (
+        {displayedUsers.length === 0 ? (
           <div className="py-12 text-center text-neutral-600">
-            no users found
+            {searchQuery ? "no users match your search" : "no users found"}
           </div>
         ) : (
           <>
@@ -129,11 +148,11 @@ function Users() {
                   </tr>
                 </thead>
                 <tbody>
-                  {users.map((user, idx) => (
+                  {displayedUsers.map((user, idx) => (
                     <tr
                       key={user.id || idx}
                       className={
-                        idx < users.length - 1
+                        idx < displayedUsers.length - 1
                           ? "border-b border-neutral-800/50"
                           : ""
                       }
@@ -155,11 +174,11 @@ function Users() {
 
             {/* Mobile Cards */}
             <div className="sm:hidden">
-              {users.map((user, idx) => (
+              {displayedUsers.map((user, idx) => (
                 <div
                   key={user.id || idx}
                   className={`p-4 ${
-                    idx < users.length - 1
+                    idx < displayedUsers.length - 1
                       ? "border-b border-neutral-800/50"
                       : ""
                   }`}

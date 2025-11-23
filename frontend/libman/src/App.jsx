@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import Books from "./pages/Books";
 import Users from "./pages/Users";
 import Borrow from "./pages/Borrow";
@@ -7,6 +8,27 @@ import Transactions from "./pages/Transactions";
 
 function App() {
   const [activeTab, setActiveTab] = useState("books");
+  const [stats, setStats] = useState({
+    totalBooks: 0,
+    totalUsers: 0,
+    borrowed: 0,
+  });
+
+  useEffect(() => {
+    // Fetch stats for dashboard
+    Promise.all([
+      axios.get("http://localhost:5000/api/books").catch(() => ({ data: [] })),
+      axios.get("http://localhost:5000/api/users").catch(() => ({ data: [] })),
+    ]).then(([booksRes, usersRes]) => {
+      const books = booksRes.data;
+      const users = usersRes.data;
+      setStats({
+        totalBooks: books.length,
+        totalUsers: users.length,
+        borrowed: books.filter((b) => !b.available).length,
+      });
+    });
+  }, []);
 
   return (
     <div className="min-h-screen p-4 sm:p-8">
@@ -18,6 +40,36 @@ function App() {
         <p className="text-neutral-500 text-xs sm:text-sm tracking-wide">
           simple & minimal library management
         </p>
+      </div>
+
+      {/* Dashboard Metrics */}
+      <div className="max-w-3xl mx-auto mb-6">
+        <div className="grid grid-cols-3 gap-4">
+          <div className="bg-neutral-900/50 rounded-lg border border-neutral-800 p-4">
+            <p className="text-xs text-neutral-500 uppercase tracking-wider mb-1">
+              Total Books
+            </p>
+            <p className="text-2xl font-bold text-neutral-100">
+              {stats.totalBooks}
+            </p>
+          </div>
+          <div className="bg-neutral-900/50 rounded-lg border border-neutral-800 p-4">
+            <p className="text-xs text-neutral-500 uppercase tracking-wider mb-1">
+              Total Users
+            </p>
+            <p className="text-2xl font-bold text-neutral-100">
+              {stats.totalUsers}
+            </p>
+          </div>
+          <div className="bg-neutral-900/50 rounded-lg border border-neutral-800 p-4">
+            <p className="text-xs text-neutral-500 uppercase tracking-wider mb-1">
+              Borrowed
+            </p>
+            <p className="text-2xl font-bold text-yellow-400">
+              {stats.borrowed}
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Navigation Tabs */}
